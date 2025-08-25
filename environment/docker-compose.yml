@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: laravel-app
+    container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ../application:/var/www/html
+    configs:
+      - source: app_env
+        target: /var/www/html/.env
+    networks:
+      - laravel-network
+    depends_on:
+      - db
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_DATABASE=${DB_DATABASE:-laravel}
+      - DB_USERNAME=${DB_USERNAME:-postgres}
+      - DB_PASSWORD=${DB_PASSWORD:-postgres}
+
+  nginx:
+    image: nginx:alpine
+    container_name: laravel-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ../application:/var/www/html
+      - ./nginx:/etc/nginx/conf.d:ro  # Монтируем директорию; :ro для read-only
+    networks:
+      - laravel-network
+    depends_on:
+      - app
+
+  db:
+    image: postgres:16
+    container_name: laravel-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-laravel}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
+
+volumes:
+  db-data:
+  env_volume:
+
+configs:
+  app_env:
+    file: .env  # файл на хосте
