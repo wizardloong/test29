@@ -25,19 +25,14 @@ bash:
 logs:
 	$(DOCKER_COMPOSE) logs -f
 
-# Запуск миграций (php artisan migrate)
-migrate:
-	$(DOCKER_COMPOSE) exec $(APP_CONTAINER) php artisan migrate
-
 # Полная перестройка: down, build, up
 rebuild: down build up
 
-# Установка зависимостей Composer (если нужно после клонирования)
-install:
-	$(DOCKER_COMPOSE) exec $(APP_CONTAINER) composer install
 
-# Генерация ключа приложения (если нужно)
-key:
-	$(DOCKER_COMPOSE) exec $(APP_CONTAINER) php artisan key:generate
+artisan:
+	$(DOCKER_COMPOSE) exec $(APP_CONTAINER) php artisan $(filter-out $@,$(MAKECMDGOALS))
 
-.PHONY: build up down bash logs migrate rebuild install key
+%:
+	@:
+
+.PHONY: build up down bash logs rebuild artisan
