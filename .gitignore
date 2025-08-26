@@ -19,7 +19,7 @@
 /application/public/storage
 /application/storage/*.key
 /application/storage/pail
-/application/vendor
+/application/vendor/
 /applicationHomestead.json
 /applicationHomestead.yaml
 /applicationThumbs.db
