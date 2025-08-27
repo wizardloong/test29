@@ -5,7 +5,7 @@
 /environment/.env.backup
 /environment/.env.production
 /environment/.phpactor.json
-/environment/.phpunit.result.cache
+/application/.phpunit.result.cache
 /.fleet
 /.idea
 /.nova

@@ -10,14 +10,18 @@ use App\Models\CarMark;
 use App\Repositories\CarRepository;
 use App\UseCases\Car\CreateCar\CreateCar;
 use App\UseCases\Car\CreateCar\CreateCarRequest;
+use App\UseCases\Car\UpdateCar\UpdateCarRequest;
 use App\UseCases\Car\DestroyCar\DestroyCar;
 use App\UseCases\Car\UpdateCar\UpdateCar;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CarController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Display a listing of the cars.
      */
@@ -58,6 +62,7 @@ class CarController extends Controller
      */
     public function show(Car $car): CarResource
     {
+        $this->authorize('view', $car);
         $car->load(['carMark', 'carModel', 'users']);
 
         return new CarResource($car);
@@ -68,8 +73,9 @@ class CarController extends Controller
      */
     public function update(CarUpdateRequest $httpRequest, Car $car, UpdateCar $updateCar): CarResource|JsonResponse
     {
+        $this->authorize('update', $car);
         try {
-            $request = new CreateCarRequest(
+            $request = new UpdateCarRequest(
                 car_mark_name: $httpRequest->car_mark_name,
                 car_model_name: $httpRequest->car_model_name,
                 year: $httpRequest->year,
@@ -92,7 +98,8 @@ class CarController extends Controller
      * Remove the specified car from storage.
      */
     public function destroy(Car $car, DestroyCar $destroyCar): JsonResponse
-    {        
+    {
+        $this->authorize('delete', $car);
         try {
             $destroyCar->execute($car->id);
 

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Repositories\CarRepository;
-use App\Repositories\Eloquent\EloquentUserRepository;
+use App\Repositories\EloquentUserRepository;
 use App\Repositories\EloquentCarRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;

@@ -2,9 +2,9 @@
 
 namespace App\UseCases\Car\UpdateCar;
 
-use App\Models\Car;
+use App\Http\Resources\CarResource;
 use App\Repositories\CarRepository;
-use App\UseCases\Car\CreateCar\CreateCarRequest;
+use App\UseCases\Car\UpdateCar\UpdateCarRequest;
 
 class UpdateCar
 {
@@ -12,14 +12,20 @@ class UpdateCar
         private CarRepository $repository
     ) {}
 
-    public function execute(int $carId, CreateCarRequest $request): \App\Http\Resources\CarResource
+    public function execute(int $carId, UpdateCarRequest $request): CarResource
     {
-        $carMark = $this->repository->createIfNotExistsMark($request->car_mark_name);
-        $carModel = $this->repository->createIfNotExistsModel($carMark->id, $request->car_model_name);
-
         $car = $this->repository->findById($carId);
-        $car->car_mark_id = $carMark->id;
-        $car->car_model_id = $carModel->id;
+
+        if (!empty($request->car_mark_name)){
+            $carMark = $this->repository->createIfNotExistsMark($request->car_mark_name);
+            $car->car_mark_id = $carMark->id;
+        }
+
+        if (!empty($request->car_model_name)){     
+            $carModel = $this->repository->createIfNotExistsModel($carMark->id, $request->car_model_name);
+            $car->car_model_id = $carModel->id;
+        }
+        
         $car->year = $request->year;
         $car->mileage = $request->mileage;
         $car->color = $request->color;
@@ -29,6 +35,6 @@ class UpdateCar
 
         $car->load(['carMark', 'carModel']);
 
-        return new \App\Http\Resources\CarResource($car);
+        return new CarResource($car);
     }
 }

@@ -19,9 +19,10 @@ class CreateUser
             'password' => bcrypt($request->password)
         ]);
         
+        $this->userRepository->save($user);
+        
         $token = $user->createToken('api_token')->plainTextToken;
 
-        $this->userRepository->save($user);
 
         return new CreateUserResponse($user);
     }
