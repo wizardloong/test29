@@ -11,6 +11,11 @@ class UserCar extends Model
     /** @use HasFactory<\Database\Factories\UserCarFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'car_id'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

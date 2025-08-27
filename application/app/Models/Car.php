@@ -32,6 +32,6 @@ class Car extends Model
 
     public function users(): HasManyThrough
     {
-        return $this->hasManyThrough(User::class, UserCar::class);
+        return $this->hasManyThrough(User::class, UserCar::class, 'car_id', 'id', 'id', 'user_id');
     }
 }

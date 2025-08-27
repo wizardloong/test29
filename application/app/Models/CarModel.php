@@ -12,7 +12,8 @@ class CarModel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        'name',
+        'car_mark_id'
     ];
 
     public function carMark(): BelongsTo

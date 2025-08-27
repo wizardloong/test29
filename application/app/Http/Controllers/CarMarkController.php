@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\CarMarkResource;
-use App\Models\CarMark;
+use App\Repositories\CarRepository;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CarMarkController extends Controller
 {
-    public function index(): AnonymousResourceCollection
+    public function index(CarRepository $repository): AnonymousResourceCollection
     {
-        $carMarks = CarMark::with('carModels')
-            ->orderBy('name')
-            ->get();
+        $carMarks = $repository->findCarMarks();
 
         return CarMarkResource::collection($carMarks);
     }
